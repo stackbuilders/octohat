@@ -1,0 +1,38 @@
+Name:                access-bot
+Version:             0.1
+Synopsis:            A tested, minimal wrapper around GitHub API
+License:             AllRightsReserved
+Author:              StackBuilders
+Maintainer:          jsantos@stackbuilders.com
+Stability:           Experimental
+Category:            Web
+Build-type:          Simple
+Cabal-version:       >=1.10
+
+Library
+  hs-source-dirs: src
+
+  Build-depends:
+    aeson,
+    base,
+    bytestring,
+    MonadCatchIO-transformers,
+    mtl,
+    text,
+    time,
+    xmlhtml,
+    wreq,
+    lens
+
+  -- exposed-modules:
+
+  default-language: Haskell2010
+
+test-suite spec
+  type            :   exitcode-stdio-1.0
+  hs-source-dirs  :   spec
+  main-is         :   Spec.hs
+  build-depends   :   base >= 4.7 && <4.8
+                    , hspec
+                    , access-bot
+  default-language:   Haskell2010
