@@ -2,10 +2,13 @@
 
 module Network.Octohat.TestUtil (removeAllTeams) where
 
+
 import Network.Octohat.Members
 import Network.Octohat.Types
 import Network.Octohat.TestData
-import Control.Monad
+
+import Control.Monad (void)
+import Test.Hspec
 
 
 
@@ -15,6 +18,6 @@ deleteAllTeams = do
   let teamsToDelete = map teamId $ filter (\t -> teamName t /= "Owners") allTeams
   mapM deleteTeamFromOrganization teamsToDelete
 
-removeAllTeams :: () -> IO ()
+removeAllTeams :: IO () -> IO ()
 removeAllTeams _ = void $ runGitHub deleteAllTeams
 

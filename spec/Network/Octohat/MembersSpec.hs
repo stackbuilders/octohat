@@ -15,7 +15,7 @@ import Network.Octohat.TestUtil (removeAllTeams)
 
 
 spec :: Spec
-spec = after removeAllTeams $
+spec = around_ removeAllTeams $
   describe "add teams" $ do
     it "should add a team to an organization and then delete it" $ do
       Right newTeam           <- runGitHub $ addTeamToOrganization "A new team" "A description" testOrganization

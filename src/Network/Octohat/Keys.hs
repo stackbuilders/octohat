@@ -15,6 +15,8 @@ import Network.Octohat.Types
 type RSAPublicKey = T.Text
 type Fingerprint  = T.Text
 
+-- | Computes a fingerprint from its Base 64 encoded representation. Assumes leading @ssh-rsa @ (mind the space)
+--   prefix and no user@hostname suffix
 fingerprintFor :: PublicKey -> PublicKeyFingerprint
 fingerprintFor PublicKey{..} = PublicKeyFingerprint publicKeyId (digestToHex publicKey)
 

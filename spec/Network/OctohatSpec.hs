@@ -13,7 +13,7 @@ import Network.Octohat.TestData (testOrganization, testAccount, testAccount2, ow
 import Network.Octohat.TestUtil (removeAllTeams)
 
 spec :: Spec
-spec = after removeAllTeams $ do
+spec = around_ removeAllTeams $ do
   describe "keysOfTeamInOrganization" $ do
     it "should return the members and their keys of an specific team" $ do
       Right newTeam           <- runGitHub $ addTeamToOrganization "A new Team" "New description" testOrganization
