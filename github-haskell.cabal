@@ -1,11 +1,11 @@
-Name:                access-bot
+Name:                octohat
 Version:             0.1
 Synopsis:            A tested, minimal wrapper around GitHub API
 License:             AllRightsReserved
 Author:              StackBuilders
 Maintainer:          jsantos@stackbuilders.com
 Stability:           Experimental
-Category:            Web
+Category:            Network
 Build-type:          Simple
 Cabal-version:       >=1.10
 
@@ -15,16 +15,31 @@ Library
   Build-depends:
     aeson,
     base,
+    base-compat,
+    base64-bytestring,
+    base16-bytestring,
     bytestring,
+    cryptohash,
+    either,
     MonadCatchIO-transformers,
     mtl,
     text,
     time,
     xmlhtml,
     wreq,
+    errors,
+    http-types,
+    http-client,
+    unordered-containers,
     lens
 
-  -- exposed-modules:
+  ghc-options:       -Wall
+  exposed-modules:   Network.Octohat.Types
+                   , Network.Octohat.Members
+                   , Network.Octohat.Keys
+                   , Network.Octohat
+
+  other-modules:     Network.Octohat.Internal
 
   default-language: Haskell2010
 
@@ -34,5 +49,9 @@ test-suite spec
   main-is         :   Spec.hs
   build-depends   :   base >= 4.7 && <4.8
                     , hspec
-                    , access-bot
+                    , hspec-expectations
+                    , text
+                    , octohat
+  other-modules:    Network.Octohat.TestData,
+                    Network.Octohat.TestUtil
   default-language:   Haskell2010
