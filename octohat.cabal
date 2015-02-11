@@ -13,25 +13,24 @@ Library
   hs-source-dirs: src
 
   Build-depends:
-    aeson,
-    base,
-    base-compat,
-    base64-bytestring,
-    base16-bytestring,
-    bytestring,
-    cryptohash,
-    either,
-    MonadCatchIO-transformers,
-    mtl,
-    text,
-    time,
-    xmlhtml,
-    wreq,
-    errors,
-    http-types,
-    http-client,
-    unordered-containers,
-    lens
+      aeson                == 0.8.*
+    , base                 >= 4.5 && < 4.8
+    , base-compat          == 0.5.*
+    , base64-bytestring    == 1.0.*
+    , base16-bytestring    == 0.1.1.*
+    , bytestring           >= 0.9
+    , cryptohash           == 0.11.*
+    , either               == 4.3.*
+    , mtl                  == 2.*
+    , text                 == 1.2.*
+    , time                 == 1.4.*
+    , xmlhtml              == 0.2.*
+    , wreq                 == 0.3.*
+    , errors               == 1.4.*
+    , http-types           == 0.8.*
+    , http-client          == 0.4.*
+    , unordered-containers == 0.2.*
+    , lens                 >= 4.0 && <= 4.7
 
   ghc-options:       -Wall
   exposed-modules:   Network.Octohat.Types
@@ -48,10 +47,10 @@ test-suite spec
   type            :   exitcode-stdio-1.0
   hs-source-dirs  :   spec
   main-is         :   Spec.hs
-  build-depends   :   base >= 4.7 && <4.8
-                    , hspec
-                    , hspec-expectations
-                    , text
+  build-depends   :   base               >= 4.5 && <4.8
+                    , hspec              == 2.1.*
+                    , hspec-expectations == 0.6.*
+                    , text               == 1.2.*
                     , octohat
   other-modules:    Network.Octohat.TestData,
                     Network.Octohat.TestUtil
