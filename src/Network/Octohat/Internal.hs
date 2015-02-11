@@ -69,6 +69,8 @@ deleteRequestTo uri = do
 
 checkForStatus :: Response a -> GitHub ()
 checkForStatus (viewResponse -> 404) = tryAssert NotFound False
+checkForStatus (viewResponse -> 403) = tryAssert NotAllowed False
+checkForStatus (viewResponse -> 401) = tryAssert RequiresAuthentication False
 checkForStatus (viewResponse -> 422) = tryAssert ValidationFailed False
 checkForStatus (viewResponse -> 500) = tryAssert InternalError False
 checkForStatus (viewResponse -> 400) = tryAssert InvalidJSON False
