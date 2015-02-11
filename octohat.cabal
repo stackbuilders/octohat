@@ -16,21 +16,23 @@ Library
       aeson                == 0.8.*
     , base                 >= 4.5 && < 4.8
     , base-compat          == 0.5.*
-    , base64-bytestring    == 1.0.*
     , base16-bytestring    == 0.1.1.*
+    , base64-bytestring    == 1.0.*
     , bytestring           >= 0.9
     , cryptohash           == 0.11.*
+    , dotenv               == 0.1.*
     , either               == 4.3.*
+    , errors               == 1.4.*
+    , http-client          == 0.4.*
+    , http-types           == 0.8.*
+    , lens                 >= 4.0 && <= 4.7
     , mtl                  == 2.*
     , text                 == 1.2.*
     , time                 == 1.4.*
-    , xmlhtml              == 0.2.*
-    , wreq                 == 0.3.*
-    , errors               == 1.4.*
-    , http-types           == 0.8.*
-    , http-client          == 0.4.*
+    , transformers         == 0.3.*
     , unordered-containers == 0.2.*
-    , lens                 >= 4.0 && <= 4.7
+    , wreq                 == 0.3.*
+    , xmlhtml              == 0.2.*
 
   ghc-options:       -Wall
   exposed-modules:   Network.Octohat.Types
@@ -48,9 +50,12 @@ test-suite spec
   hs-source-dirs  :   spec
   main-is         :   Spec.hs
   build-depends   :   base               >= 4.5 && <4.8
+                    , base-compat        == 0.5.*
                     , hspec              == 2.1.*
                     , hspec-expectations == 0.6.*
                     , text               == 1.2.*
+                    , dotenv             == 0.1.*
+                    , transformers       == 0.3.*
                     , octohat
   other-modules:    Network.Octohat.TestData,
                     Network.Octohat.TestUtil

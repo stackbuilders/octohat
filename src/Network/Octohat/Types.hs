@@ -12,6 +12,8 @@ module Network.Octohat.Types ( Member(..)
                              , PublicKeyFingerprint(..)
                              , TeamCreateRequest(..)
                              , GitHubReturnStatus(..)
+                             , DidAddKey(..)
+                             , AddPublicKeyRequest(..)
                              , runGitHub
                              , runGitHub'
                              , GitHub) where
@@ -57,8 +59,8 @@ data MemberWithKey =
 
 -- | Represents a PublicKey within GitHub. It includes its ID and the public key encoded as base 64
 data PublicKey =
-  PublicKey { publicKeyId :: Integer
-            , publicKey   :: T.Text
+  PublicKey { publicKeyId    :: Integer
+            , publicKey      :: T.Text
             } deriving (Show, Eq)
 
 -- | Represents a Fingerprint. The `fingerprintId` field should match the fingerprint's public key ID
@@ -86,6 +88,14 @@ instance FromJSON PublicKey where
   parseJSON (Object o) = PublicKey <$> o .: "id" <*> o .: "key"
   parseJSON _          = fail "Could not find public keys in document"
 
+data DidAddKey = KeyAdded | KeyNotAdded
+
+data AddPublicKeyRequest =
+  AddPublicKeyRequest {
+      addPublicKeyRequestKey   :: T.Text,
+      addPublicKeyRequestTitle :: T.Text
+  }
+
 instance FromJSON StatusInTeam where
   parseJSON (Object o) =
     case HS.lookup "state" o of
@@ -95,9 +105,10 @@ instance FromJSON StatusInTeam where
       Nothing        -> (fail . maybe "No error message from GitHub" show) (HS.lookup "message" o)
   parseJSON _         = fail "Expected a membership document, got something else"
 
-$(deriveJSON defaultOptions { fieldLabelModifier = drop 6 . map toLower } ''Member)
-$(deriveJSON defaultOptions { fieldLabelModifier = drop 4 . map toLower } ''Team)
-$(deriveJSON defaultOptions { fieldLabelModifier = drop 7 . map toLower } ''TeamCreateRequest)
+$(deriveJSON defaultOptions { fieldLabelModifier = drop 6  . map toLower } ''Member)
+$(deriveJSON defaultOptions { fieldLabelModifier = drop 4  . map toLower } ''Team)
+$(deriveJSON defaultOptions { fieldLabelModifier = drop 7  . map toLower } ''TeamCreateRequest)
+$(deriveJSON defaultOptions { fieldLabelModifier = drop 19 . map toLower } ''AddPublicKeyRequest)
 
 -- | Error codes GitHub might return when attempting to use an API endpoint
 data GitHubReturnStatus =   InvalidJSON             -- ^ GitHub could not parse the JSON document sent
@@ -122,6 +133,9 @@ instance Putable EmptyBody where
   putPayload EmptyBody req = return $ req {requestBody = RequestBodyLBS ""}
 
 instance Postable TeamCreateRequest where
+  postPayload createRequest req = return $ req { requestBody = RequestBodyLBS (encode createRequest)}
+
+instance Postable AddPublicKeyRequest where
   postPayload createRequest req = return $ req { requestBody = RequestBodyLBS (encode createRequest)}
 
 -- | GitHub's OAuth 2.0 bearer token. This is simply added in an
