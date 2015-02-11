@@ -44,7 +44,7 @@ spec = around_ removeAllTeams $
       addStatus `shouldBe` Active
 
       Right membersInNewTeam <- runGitHub $ membersForTeam (teamId newTeam)
-      [(memberLogin $ head membersInNewTeam)] `shouldBe` ["jsantos-testaccount"]
+      [memberLogin $ head membersInNewTeam] `shouldBe` ["jsantos-testaccount"]
 
       Right deleteStatus <- runGitHub $ deleteMemberFromTeam "jsantos-testaccount" (teamId newTeam)
       [deleteStatus] `shouldBe` [Deleted]
