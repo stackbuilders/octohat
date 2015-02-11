@@ -17,14 +17,13 @@ spec = around_ removeAllTeams $ do
   describe "keysOfTeamInOrganization" $ do
     it "should return the members and their keys of an specific team" $ do
       Right newTeam           <- runGitHub $ addTeamToOrganization "A new Team" "New description" testOrganization
-      let idNewTeam = teamId newTeam
       Right teamsInOctohat    <- runGitHub $ teamsForOrganization testOrganization
       teamsInOctohat `shouldBe` [ownerTeam, newTeam]
-      Right addingStatus1     <- runGitHub $ addMemberToTeam "jsantos-testaccount" idNewTeam
+      Right addingStatus1     <- runGitHub $ addMemberToTeam "jsantos-testaccount" (teamId newTeam)
       addingStatus1 `shouldBe` Active
-      Right addingStatus2     <- runGitHub $ addMemberToTeam "testUserForGithub" idNewTeam
+      Right addingStatus2     <- runGitHub $ addMemberToTeam "testUserForGithub" (teamId newTeam)
       addingStatus2 `shouldBe` Active
-      Right membersInThisTeam <- runGitHub $ membersForTeam idNewTeam
+      Right membersInThisTeam <- runGitHub $ membersForTeam (teamId newTeam)
       membersInThisTeam `shouldMatchList` [testAccount, testAccount2]
       Right membersAndKeys    <- runGitHub $ keysOfTeamInOrganization testOrganization (teamName newTeam)
       membersAndKeys `shouldMatchList` keysAndMembersOnNewTeam
@@ -32,10 +31,9 @@ spec = around_ removeAllTeams $ do
   describe "membersOfTeamInOrganization" $ do
     it "should return the members of a team on a organization, using organization and team names" $ do
       Right newTeam <- runGitHub $ addTeamToOrganization "A new Team" "New description" testOrganization
-      let idNewTeam = teamId newTeam
       Right teamsInOctohat <- runGitHub $ teamsForOrganization testOrganization
       teamsInOctohat `shouldMatchList` [ownerTeam, newTeam]
-      Right addingStatus <- runGitHub $ addMemberToTeam "jsantos-testaccount" idNewTeam
+      Right addingStatus <- runGitHub $ addMemberToTeam "jsantos-testaccount" (teamId newTeam)
       addingStatus`shouldBe` Active
       Right membersInThisTeam <- runGitHub $ membersOfTeamInOrganization testOrganization (teamName newTeam)
       membersInThisTeam `shouldBe` [testAccount]
