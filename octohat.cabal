@@ -1,6 +1,6 @@
 Name:                octohat
 Version:             0.1
-Synopsis:            A tested, minimal wrapper around GitHub's API. Very incomplete at the moment
+Synopsis:            A tested, minimal wrapper around GitHub's API.
 License:             MIT
 Author:              Stack Builders
 Maintainer:          hackage@stackbuilders.com
@@ -61,3 +61,7 @@ test-suite spec
   other-modules:    Network.Octohat.TestData,
                     Network.Octohat.TestUtil
   default-language:   Haskell2010
+
+source-repository head
+  type: git
+  location: https://github.com/stackbuilders/octohat
