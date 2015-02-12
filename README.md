@@ -52,6 +52,8 @@ cabal build
 
 ### Then run the test suite:
 
+**CAUTION: Use tokens of a test user, not your own account since the test suite clears state on Github before it runs (i.e., it will delete everything in your github account).**
+
 You need to set some environment variables.
 
 Set `SANDBOX_ORGANIZATION` to an organization you don't care about, since the tests will delete all the teams within that organization
