@@ -3,7 +3,8 @@
 
 module Network.Octohat ( addUserToTeam
                        , membersOfTeamInOrganization
-                       , keysOfTeamInOrganization) where
+                       , keysOfTeamInOrganization
+                       , teamForTeamNameInOrg) where
 
 import Control.Error.Safe (tryHead)
 import Control.Monad (liftM)
@@ -18,14 +19,14 @@ import Network.Octohat.Types
 membersOfTeamInOrganization :: T.Text -- ^ GitHub organization name
                             -> T.Text -- ^ GitHub team name
                             -> GitHub [Member]
-membersOfTeamInOrganization nameOfOrg nameOfTeam = teamId `liftM` findTeamOrFail nameOfOrg nameOfTeam >>= membersForTeam
+membersOfTeamInOrganization nameOfOrg nameOfTeam = teamId `liftM` teamForTeamNameInOrg nameOfOrg nameOfTeam >>= membersForTeam
 
 -- | Adds a user with @nameOfUser@ to the team named @nameOfTeam@ within the organization named `nameOfOrg`
 addUserToTeam :: T.Text -- ^ GitHub username
               -> T.Text -- ^ GitHub organization name
               -> T.Text -- ^ GitHub team name
               -> GitHub StatusInTeam
-addUserToTeam nameOfUser nameOfOrg nameOfTeam = teamId `liftM` findTeamOrFail nameOfOrg nameOfTeam >>= addMemberToTeam nameOfUser
+addUserToTeam nameOfUser nameOfOrg nameOfTeam = teamId `liftM` teamForTeamNameInOrg nameOfOrg nameOfTeam >>= addMemberToTeam nameOfUser
 
 -- | Retrieves a list of members in a given team within an organization together with their public keys
 keysOfTeamInOrganization :: T.Text -- ^ GitHub organization name
@@ -37,11 +38,18 @@ keysOfTeamInOrganization nameOfOrg nameOfTeam = do
   let memberFingerprints = publicKeySetToFingerprints pubKeys
   return $ makeMembersWithKey members pubKeys memberFingerprints
 
-findTeamOrFail :: T.Text -> T.Text -> GitHub Team
-findTeamOrFail nameOfOrg nameOfTeam = do
+teamForTeamNameInOrg :: T.Text -- ^ Team name
+                     -> T.Text -- ^ Organization name
+                     -> GitHub Team
+teamForTeamNameInOrg nameOfTeam nameOfOrg = do
   teams <- teamsForOrganization nameOfOrg
   tryHead NotFound (teamsWithName nameOfTeam teams)
 
+teamsWithName :: T.Text -> [Team] -> [Team]
+teamsWithName nameOfTeam = filter (hasName nameOfTeam)
+
+hasName :: T.Text -> Team -> Bool
+hasName name team = name == teamName team
 keysForMember :: Member -> GitHub [PublicKey]
 keysForMember = publicKeysForUser . memberLogin
 
@@ -51,8 +59,4 @@ makeMembersWithKey = zipWith3 MemberWithKey
 publicKeySetToFingerprints :: [[PublicKey]] -> [[PublicKeyFingerprint]]
 publicKeySetToFingerprints = (map.map) fingerprintFor
 
-teamsWithName :: T.Text -> [Team] -> [Team]
-teamsWithName nameOfTeam = filter (hasName nameOfTeam)
 
-hasName :: T.Text -> Team -> Bool
-hasName name team = name == teamName team

@@ -1,41 +1,74 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Network.Octohat.TestData (testOrganization
-                                , ownerTeam
-                                , testAccountFingerprint
-                                , testAccount
-                                , testAccount2
-                                , keysAndMembersOnNewTeam) where
+module Network.Octohat.TestData ( loadTestOrganizationName
+                                , loadOwnerTeam
+                                , loadTestAccountOne
+                                , loadTestAccountTwo
+                                , loadTestAccountThree
+                                , publicKeyFixture
+                                , publicKeyHostnameFixture
+                                , fingerprintFixture
+                                , fullPublicKeyFixture
+                                ) where
 
 import Network.Octohat.Types
+import Network.Octohat (teamForTeamNameInOrg)
+import Network.Octohat.Members (userForUsername)
+
+import Control.Monad.IO.Class (liftIO)
+import Control.Arrow (second)
+import System.Environment.Compat (getEnvironment)
+import Configuration.Dotenv (loadFile)
+import Control.Applicative ((<$>), (<*>))
 import qualified Data.Text as T
 
+data TestEnvironment =
+  TestEnvironment {
+    organization :: T.Text,
+    accountOne   :: T.Text,
+    accountTwo   :: T.Text,
+    accountThree :: T.Text
+  }
 
--- WARNING Do not use a real organization here. The tests clean after themselves and delete all the teams
--- within the organization specified here.
-testOrganization :: T.Text
-testOrganization = "octohat-organization"
+readEnv :: [(String, String)] -> Maybe TestEnvironment
+readEnv environment =
+  TestEnvironment <$> lookup "SANDBOX_ORGANIZATION" env
+                  <*> lookup "TEST_ACCOUNT_ONE" env
+                  <*> lookup "TEST_ACCOUNT_TWO" env
+                  <*> lookup "TEST_ACCOUNT_THREE" env
+    where env = map (second T.pack) environment
 
-ownerTeam :: Team
-ownerTeam = Team 1284248 "Owners" Nothing
+loadEnv :: IO TestEnvironment
+loadEnv = do
+  loadFile False ".github-sandbox"
+  env <- getEnvironment
+  case readEnv env of
+    Just res -> return res
+    Nothing  -> fail "Environment variables not set correctly, please read README.md"
 
-testAccountFingerprint :: PublicKeyFingerprint
-testAccountFingerprint =
-  PublicKeyFingerprint {fingerprintId = 10865212
-                       , publicKeyFingerprint = "b7:7d:f5:4e:d6:c3:32:fd:13:ed:a5:1a:13:c2:32:11"}
+loadTestOrganizationName :: IO T.Text
+loadTestOrganizationName = organization `fmap` loadEnv
 
-testAccountPublicKey :: PublicKey
-testAccountPublicKey = PublicKey {publicKeyId = 10865212
-                                 , publicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCwXamXSk3zMNl/+F6Y6qotMhTTfUiYxDnuDi0+YMeg59CwW2GC9z2361WOqvR4WkJPjgpJ1JFuNJNJAIsFUS5fQBciO3EIXKaNSyYV4roivSjh6tTMsdkYZ8ASc5zmr9t3m/8d7/UdnG2PqiQOB9fml/5OWr1o1oNnFPn1CjzOod6xaBs0jr+TyXKBMlnQ6avPZgBu9150FfN/T9aXsGJskaxmMqbKkGLUUVxdaISoi1Ko93DWLLSyl63IjZZGIRIpv1MhjxtcnW0lEUwuP+GVRTL2WJygmMKAFGj4VP+KW8cuSxxpil7hgsRfSDkz626DW/Afi4uPqbRNHytR/a1T"
-                                 }
+loadOwnerTeam :: GitHub Team
+loadOwnerTeam = liftIO (organization `fmap` loadEnv) >>= teamForTeamNameInOrg "Owners"
 
-testAccount :: Member
-testAccount = Member "jsantos-testaccount" 10925231
+loadTestAccountOne :: GitHub Member
+loadTestAccountOne = liftIO (accountOne `fmap` loadEnv) >>= userForUsername
 
-testAccount2 :: Member
-testAccount2 = Member "testUserForGithub" 10882308
+loadTestAccountTwo :: GitHub Member
+loadTestAccountTwo = liftIO (accountTwo `fmap` loadEnv) >>= userForUsername
 
---A team with testAccount and testAccount2 on it
-keysAndMembersOnNewTeam :: [MemberWithKey]
-keysAndMembersOnNewTeam =  [MemberWithKey {member = testAccount, memberKey = [testAccountPublicKey], memberKeyFingerprint = [testAccountFingerprint]}
-                           , MemberWithKey {member = testAccount2, memberKey = [], memberKeyFingerprint = []}]
+loadTestAccountThree :: GitHub Member
+loadTestAccountThree = liftIO (accountThree `fmap` loadEnv) >>= userForUsername
+
+publicKeyHostnameFixture :: T.Text
+publicKeyHostnameFixture = "octohat@stackbuilders"
+
+fingerprintFixture :: T.Text
+fingerprintFixture = "42:59:20:02:6f:df:b4:4a:1c:0e:fd:1b:86:58:f6:06"
+
+publicKeyFixture :: T.Text
+publicKeyFixture = "AAAAB3NzaC1yc2EAAAADAQABAAABAQC1Dopc3yxLWlzJwFqSoj0nAzRCU93R5DwNlogtRr/7NsnUVf443wl/vpRDRNscR0dV/VeNWYCqiZA0wGrXiVJ7HYi9XaWtHrUutLqrLe47aFFvAIdp15+RHkM0sXr963Kb9XMkmqswyXJ2TaZ0cgZfMNgl1ND248Y8fMDBx8elHwdZvyG2onG5aSVtOuKB4dWnmIb+uSQCN1K2kLYwHvQOjmqCiZ2XOP9u+ScphVdp6x4uAczH67CCRSUhI6U2fxSNf6YaDXyCWcqxj1agHUKdskb5rzxPaz5XZ2BgQscjoVo93M338HLmkyvbuP4yl2X6ZdLfE5mk2ZFfWQogxLGd"
+
+fullPublicKeyFixture :: T.Text
+fullPublicKeyFixture = T.concat ["ssh-rsa ", publicKeyFixture, " ", publicKeyHostnameFixture]
