@@ -36,7 +36,7 @@ The project uses Stackage to maintain build stability
 
 ## Instructions
 
-To install:
+### To install:
 ```
 cabal sandbox init
 cabal install --only-dep --enable-test -jN
@@ -44,13 +44,27 @@ cabal install --only-dep --enable-test -jN
 
 where N = \<the number of cores in your machine\>
 
-To build:
+### To build:
 
 ```
 cabal build
 ```
 
-Then run the test suite:
+### Then run the test suite:
+
+You need to set some environment variables.
+
+Set `SANDBOX_ORGANIZATION` to an organization you don't care about, since the tests will delete all the teams within that organization
+
+Set `TEST_ACCOUNT_ONE` to a test account member of the Owners teams in `$SANDBOX_ORGANIZATION`
+
+Set `TEST_ACCOUNT_TWO` to another test account member of the Owners teams in `$SANDBOX_ORGANIZATION`
+
+Set `TEST_ACCOUNT_THREE` to yet another test account member of the Owners teams in `$SANDBOX_ORGANIZATION`
+
+Set `GITHUB_TOKEN` to an API token from `$TEST_ACCOUNT_ONE`. The token scopes should include full admin privileges and the ability to write public keys.
+
+You can these variables either directly or put them in `.GITHUB_SANDBOX`. Either way they must be set to run the tests. Finally run the tests with:
 
 ```
 cabal test
