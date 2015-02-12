@@ -23,7 +23,7 @@ deleteAllTeams = do
 
 setupToken :: IO ()
 setupToken = do
-  loadFile False ".github-sandbox"
+  loadFile False ".env"
   result <- runGitHub deleteAllTeams
   case result of
     Left  _ -> fail "Clean-up failed"

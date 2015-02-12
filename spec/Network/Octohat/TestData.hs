@@ -40,7 +40,7 @@ readEnv environment =
 
 loadEnv :: IO TestEnvironment
 loadEnv = do
-  loadFile False ".github-sandbox"
+  loadFile False ".env"
   env <- getEnvironment
   case readEnv env of
     Just res -> return res
