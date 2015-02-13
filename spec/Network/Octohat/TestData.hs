@@ -50,7 +50,7 @@ loadTestOrganizationName :: IO T.Text
 loadTestOrganizationName = organization `fmap` loadEnv
 
 loadOwnerTeam :: GitHub Team
-loadOwnerTeam = liftIO (organization `fmap` loadEnv) >>= teamForTeamNameInOrg "Owners"
+loadOwnerTeam = liftIO (organization `fmap` loadEnv) >>= flip teamForTeamNameInOrg "Owners"
 
 loadTestAccountOne :: GitHub Member
 loadTestAccountOne = liftIO (accountOne `fmap` loadEnv) >>= userForUsername
