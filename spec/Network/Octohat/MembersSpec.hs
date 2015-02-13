@@ -48,7 +48,7 @@ spec = after removeTeams $ before setupToken $ do
     it "should get the public keys for a user" $ do
       -- This assumes the token belongs to testAccountOne
       Right testAccountOne <- runGitHub loadTestAccountOne
-      newKey <- runGitHub $ addPublicKey publicKeyFixture publicKeyHostnameFixture
+      _ <- runGitHub $ addPublicKey publicKeyFixture publicKeyHostnameFixture
 
       Right pubKey <- runGitHub $ publicKeysForUser (memberLogin testAccountOne)
       fmap (publicKeyFingerprint . fingerprintFor) pubKey `shouldBe` [fingerprintFixture]

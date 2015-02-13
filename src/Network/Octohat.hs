@@ -38,10 +38,10 @@ keysOfTeamInOrganization nameOfOrg nameOfTeam = do
   let memberFingerprints = publicKeySetToFingerprints pubKeys
   return $ makeMembersWithKey members pubKeys memberFingerprints
 
-teamForTeamNameInOrg :: T.Text -- ^ Team name
-                     -> T.Text -- ^ Organization name
+teamForTeamNameInOrg :: T.Text -- ^ Organization name
+                     -> T.Text -- ^ Team name
                      -> GitHub Team
-teamForTeamNameInOrg nameOfTeam nameOfOrg = do
+teamForTeamNameInOrg nameOfOrg nameOfTeam = do
   teams <- teamsForOrganization nameOfOrg
   tryHead NotFound (teamsWithName nameOfTeam teams)
 
