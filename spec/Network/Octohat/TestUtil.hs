@@ -17,7 +17,7 @@ findUserId username = memberId `fmap` userForUsername username
 deleteAllTeams :: GitHub [DidDelete]
 deleteAllTeams = do
   testOrganization <- liftIO loadTestOrganizationName
-  allTeams <- teamsForOrganization testOrganization
+  allTeams <- teamsForOrganization (OrganizationName testOrganization)
   let teamsToDelete = map teamId $ filter (\t -> teamName t /= "Owners") allTeams
   mapM deleteTeamFromOrganization teamsToDelete
 

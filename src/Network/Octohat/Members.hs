@@ -23,11 +23,11 @@ import Data.Monoid ((<>))
 
 -- | Takes a new team name, the description of a team and the organization where to create the team
 --   and creates a new team. Regular GitHub authorization/authentication applies.
-addTeamToOrganization :: T.Text  -- ^ Name of new team
+addTeamToOrganization :: TeamName -- ^ Name of new team
                       -> T.Text  -- ^ Description of new team
-                      -> T.Text  -- ^ Organization name where the team will be created
+                      -> OrganizationName -- ^ Organization name where the team will be created
                       -> GitHub Team
-addTeamToOrganization nameOfNewTeam descOfTeam orgName =
+addTeamToOrganization (TeamName nameOfNewTeam) descOfTeam (OrganizationName orgName) =
   postRequestTo (composeEndpoint ["orgs", orgName, "teams"]) (TeamCreateRequest nameOfNewTeam descOfTeam)
 
 -- | Deletes a team from an organization using its team ID.
@@ -36,9 +36,9 @@ deleteTeamFromOrganization :: Integer          -- ^ ID of Team to delete
 deleteTeamFromOrganization idOfTeam = deleteRequestTo (composeEndpoint ["teams", T.pack $ show idOfTeam])
 
 -- | Returns a list of members of an organization with the given name.
-membersForOrganization :: T.Text          -- ^ The organization name
+membersForOrganization :: OrganizationName -- ^ The organization name
                        -> GitHub [Member]
-membersForOrganization nameOfOrg = getRequestTo (composeEndpoint ["orgs", nameOfOrg, "members"])
+membersForOrganization (OrganizationName nameOfOrg) = getRequestTo (composeEndpoint ["orgs", nameOfOrg, "members"])
 
 -- | Returns a list of members of a team with the given team ID.
 membersForTeam :: Integer         -- ^ The team ID
@@ -46,9 +46,9 @@ membersForTeam :: Integer         -- ^ The team ID
 membersForTeam idOfTeam = getRequestTo (composeEndpoint ["teams", T.pack $ show idOfTeam, "members"])
 
 -- | Returns a list of teams for the organization with the given name
-teamsForOrganization :: T.Text        -- ^ The organization name
+teamsForOrganization :: OrganizationName -- ^ The organization name
                      -> GitHub [Team]
-teamsForOrganization nameOfOrg = getRequestTo (composeEndpoint ["orgs", nameOfOrg, "teams"])
+teamsForOrganization (OrganizationName nameOfOrg) = getRequestTo (composeEndpoint ["orgs", nameOfOrg, "teams"])
 
 -- | Adds a member to a team, might invite or add the member. Refer to 'StatusInTeam'
 addMemberToTeam :: T.Text               -- ^ The GitHub username to add to a team
