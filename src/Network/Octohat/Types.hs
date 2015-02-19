@@ -5,6 +5,8 @@ module Network.Octohat.Types ( Member(..)
                              , MemberWithKey(..)
                              , Team(..)
                              , BearerToken(..)
+                             , OrganizationName(..)
+                             , TeamName(..)
                              , StatusInTeam(..)
                              , EmptyBody(..)
                              , DidDelete(..)
@@ -141,6 +143,14 @@ instance Postable AddPublicKeyRequest where
 -- | GitHub's OAuth 2.0 bearer token. This is simply added in an
 --   Authorization header
 newtype BearerToken = BearerToken { unBearerToken :: T.Text }
+
+-- | OrganizationName is added in order to have type safety in functions where the
+--   Organization name and the Team name are both strings and may be confused
+newtype OrganizationName = OrganizationName { unOrganizationName :: T.Text }
+
+-- | TeamName is added in order to have type safety in functions where the
+--   Team name and the Organization name are both strings and may be confused
+newtype TeamName = TeamName { unTeamName :: T.Text }
 
 -- | The monad transformer where all operations run. Supports initial configuration
 --   through a Reader monad and the possibility of failure through Either

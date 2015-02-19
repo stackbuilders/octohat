@@ -23,10 +23,10 @@ spec :: Spec
 spec = after removeTeams $ before setupToken $ do
   describe "add teams" $ do
     it "should add a team to an organization and then delete it" $ do
-      testOrganization <- loadTestOrganizationName
+      testOrganization <- OrganizationName `fmap` loadTestOrganizationName
       Right ownerTeam  <- runGitHub loadOwnerTeam
 
-      Right newTeam           <- runGitHub $ addTeamToOrganization "A new team" "A description" testOrganization
+      Right newTeam           <- runGitHub $ addTeamToOrganization (TeamName "A new team") "A description" testOrganization
       Right teamsInOctohat    <- runGitHub $ teamsForOrganization testOrganization
       teamsInOctohat `shouldBe` [ownerTeam, newTeam]
       Right deleteResult      <- runGitHub $ deleteTeamFromOrganization (teamId newTeam)
@@ -35,10 +35,10 @@ spec = after removeTeams $ before setupToken $ do
       newTeamsInOctohat `shouldBe` [ownerTeam]
 
     it "should add a member to a new team and then delete it" $ do
-      testOrganization     <- loadTestOrganizationName
+      testOrganization     <- OrganizationName `fmap` loadTestOrganizationName
       Right testAccountOne <- runGitHub loadTestAccountOne
 
-      Right newTeam <- runGitHub $ addTeamToOrganization "A new team" "A description" testOrganization
+      Right newTeam <- runGitHub $ addTeamToOrganization (TeamName "A new team") "A description" testOrganization
       let idForThisTeam = teamId newTeam
       Right addingStatus <- runGitHub $ addMemberToTeam (memberLogin testAccountOne) idForThisTeam
       addingStatus `shouldBe` Active
@@ -54,10 +54,10 @@ spec = after removeTeams $ before setupToken $ do
       fmap (publicKeyFingerprint . fingerprintFor) pubKey `shouldBe` [fingerprintFixture]
 
     it "should delete a member from a team" $ do
-      testOrganization     <- loadTestOrganizationName
+      testOrganization     <- OrganizationName `fmap` loadTestOrganizationName
       Right testAccountOne <- runGitHub loadTestAccountOne
 
-      Right newTeam    <- runGitHub $ addTeamToOrganization "Testing team" "Desc" testOrganization
+      Right newTeam    <- runGitHub $ addTeamToOrganization (TeamName "Testing team") "Desc" testOrganization
       Right addStatus  <- runGitHub $ addMemberToTeam (memberLogin testAccountOne) (teamId newTeam)
       addStatus `shouldBe` Active
 
@@ -74,7 +74,7 @@ spec = after removeTeams $ before setupToken $ do
       Right testAccountOne   <- runGitHub loadTestAccountOne
       Right testAccountTwo   <- runGitHub loadTestAccountTwo
       Right testAccountThree <- runGitHub loadTestAccountThree
-      testOrganization       <- loadTestOrganizationName
+      testOrganization       <- OrganizationName `fmap` loadTestOrganizationName
 
       Right members <- runGitHub $ membersForOrganization testOrganization
       members `shouldMatchList` [testAccountOne, testAccountTwo, testAccountThree]
