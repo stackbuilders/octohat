@@ -1,5 +1,5 @@
 # octohat
-[![Build Status](https://travis-ci.org/stackbuilders/octohat.svg)](https://travis-ci.org/stackbuilders/octohat)
+[![Build Status](https://travis-ci.org/stackbuilders/octohat.svg?branch=master)](https://travis-ci.org/stackbuilders/octohat)
 [![Hackage](https://img.shields.io/hackage/v/octohat.svg)](http://hackage.haskell.org/package/octohat)
 
 A well tested, GitHub API client using `wreq` as a backend
