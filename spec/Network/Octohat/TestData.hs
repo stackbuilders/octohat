@@ -65,10 +65,10 @@ publicKeyHostnameFixture :: T.Text
 publicKeyHostnameFixture = "octohat@stackbuilders"
 
 fingerprintFixture :: T.Text
-fingerprintFixture = "42:59:20:02:6f:df:b4:4a:1c:0e:fd:1b:86:58:f6:06"
+fingerprintFixture = "9f:88:05:ab:2a:ac:79:5f:21:26:0c:56:28:71:fa:53"
 
 publicKeyFixture :: T.Text
-publicKeyFixture = "AAAAB3NzaC1yc2EAAAADAQABAAABAQC1Dopc3yxLWlzJwFqSoj0nAzRCU93R5DwNlogtRr/7NsnUVf443wl/vpRDRNscR0dV/VeNWYCqiZA0wGrXiVJ7HYi9XaWtHrUutLqrLe47aFFvAIdp15+RHkM0sXr963Kb9XMkmqswyXJ2TaZ0cgZfMNgl1ND248Y8fMDBx8elHwdZvyG2onG5aSVtOuKB4dWnmIb+uSQCN1K2kLYwHvQOjmqCiZ2XOP9u+ScphVdp6x4uAczH67CCRSUhI6U2fxSNf6YaDXyCWcqxj1agHUKdskb5rzxPaz5XZ2BgQscjoVo93M338HLmkyvbuP4yl2X6ZdLfE5mk2ZFfWQogxLGd"
+publicKeyFixture = "AAAAB3NzaC1yc2EAAAADAQABAAABAQDEOF9HByAB15X65dOi7rJGLS42rsvcCVxOXHD55CZe8zLdigUEuPPhN0rVaXxa936TYx1MpwR+oI741CYlinIvxJGx++/iXDx1JwxHjC0VKNRgWevn5TVOoa0fXgj9whCVK0savBIgizF3DG19J+VGW58ooMM86PpYLY/Usq3tnI3w9dr96moQRMUu6rSy8HyMhBuzU4LZ9D4sjEnuAneNQZ6HbNQtqkzTb9f7CdBDiC55PfLx1ilBVUHk7piU7GuesgVwddIa8J7J8Ljq2d/dMbmJrUFzHBlIEho7bzl1Mmh6JfWrGUwM82/eA6RAZNyG6yLM0crMcayAnsbvnm41"
 
 fullPublicKeyFixture :: T.Text
 fullPublicKeyFixture = T.concat ["ssh-rsa ", publicKeyFixture, " ", publicKeyHostnameFixture]

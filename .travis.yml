@@ -5,8 +5,4 @@ ghc:
 - 7.8
 env:
   global:
-  - secure: Cp+kl0j79zeXCj1zZN6gbU/8RZW7aXXDOlbKSNLa338Io0LwmSG+L2beazhhw7gkB4qFf9s9seJzjgx0jJaV1jkizcRunQC/iw7q6Y4wBr6jeQJqGKGyzaKyTY3dTwN20V/NnofRxKKL2v0QX1kUx5CB34wlprq/wO9nJeIDR1U=
-  - secure: IlhKuNat07K/2JXzO9ZKI1bOL8cJv0LkMZh4rIggftLdEOsMOu4ulWjV+x6vWyp7UuGZlD/hYR9tz9Rg55YeXyiDwz+HWzQa/heC8TppvCkS7nEeydL32MOlCNf+4cVHlqw++lSTxfje/UVPfiu3zxfYfuP+4F+8IX/lHLvL3z4=
-  - secure: Z8t6MPgwgO5hkAKmNYn3Bpow/1vxKyxCXJbI7LatzInLYWVOW5lLd9zvbYj6gXFOADqskhwPIWEcupAEHbNEQt5kKql/nTgIOIdk6aNisDBE4iPzrm/DlPFgOpjUN1/Npp9xXPwKfOvG39qDZpLQ7IMpZ69CswxsmqzqKcSC9Co=
-  - secure: bX6oPsXtwfg0YbeORmkrvK4ZST0gQAsVsZ952L1SLVtc6GvTecWGoQlFya93TLldUzwFtFH8W6GRIrNlHLH3dgbKDVVM/QFwAZwNv53hsYfUMRkUkkBFMtwZb/q9pKi0TxwjNrhDQ++5e2xjfgZaFtGeYIQz+A3pmdUHWOz/2Uc=
-  - secure: FPGLnJnH9Sge64aL/bUsUhz0VHOBxH5B6o7VlXBKaJr8eY+FR5h1tjEN+D+iCvD0NQrnQwR/WolMXL2F8KRlFKXfdhBG6kfdXcu6gujJ1bIythMEu6tOE1F0KlYv33Yxg3yYlfR5SJMuDn0Ew+Msr6eVh+PXzwMuwiFhlQgqR+I=
+    secure: KyAZkP0Gxv1yMtZNCmBns8guojQ99GCUSzbu4SNKxqPp6S0GXBrfqmXE98Myk8L/Yz+Xu9Z6qZy1xfMtSLjlakRuRNlWhzkShItqqD1MDTdrxNqfwxVJcQVv3SIPTws5suAG03yb5xYcKtlJ/L1NrQjIwiDlVnPr+I5SKGP/Krc=
