@@ -38,6 +38,35 @@ The project uses Stackage to maintain build stability
 
 ## Instructions
 
+### Docker
+
+Requirements:
+
+* [docker](https://docs.docker.com/installation)
+* [fig](http://www.fig.sh/install.html)
+
+Build the Docker container:
+```
+fig up -d
+```
+
+Then fire up bash:
+```
+fig run dev bash
+```
+
+You can now run the next instructions to install, build and run tests inside the container. We mount the current directory as `/workspace` so that you only have to install once.
+
+Additionally, if you want to use GHCi:
+```
+fig run dev
+```
+
+Or `cabal repl`:
+```
+fig run dev cabal repl
+```
+
 ### To install:
 ```
 cabal sandbox init
