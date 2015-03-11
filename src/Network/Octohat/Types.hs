@@ -142,15 +142,15 @@ instance Postable AddPublicKeyRequest where
 
 -- | GitHub's OAuth 2.0 bearer token. This is simply added in an
 --   Authorization header
-newtype BearerToken = BearerToken { unBearerToken :: T.Text }
+newtype BearerToken = BearerToken { unBearerToken :: T.Text } deriving Show
 
 -- | OrganizationName is added in order to have type safety in functions where the
 --   Organization name and the Team name are both strings and may be confused
-newtype OrganizationName = OrganizationName { unOrganizationName :: T.Text }
+newtype OrganizationName = OrganizationName { unOrganizationName :: T.Text } deriving Show
 
 -- | TeamName is added in order to have type safety in functions where the
 --   Team name and the Organization name are both strings and may be confused
-newtype TeamName = TeamName { unTeamName :: T.Text }
+newtype TeamName = TeamName { unTeamName :: T.Text } deriving Show
 
 -- | The monad transformer where all operations run. Supports initial configuration
 --   through a Reader monad and the possibility of failure through Either
