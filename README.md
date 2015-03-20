@@ -1,10 +1,10 @@
-# octohat
+# Octohat
 [![Build Status](https://travis-ci.org/stackbuilders/octohat.svg?branch=master)](https://travis-ci.org/stackbuilders/octohat)
 [![Hackage](https://img.shields.io/hackage/v/octohat.svg)](http://hackage.haskell.org/package/octohat)
 
-A well tested, GitHub API client using `wreq` as a backend
+A well tested, GitHub API client for Haskell using `wreq` as a backend.
 
-The project uses Stackage to maintain build stability
+The project uses Stackage to maintain build stability.
 
 ## Currently supported endpoints
 
@@ -73,3 +73,7 @@ You can these variables either directly or put them in `.GITHUB_SANDBOX`. Either
 ```
 cabal test
 ```
+
+## License
+
+MIT, see the LICENSE file.
