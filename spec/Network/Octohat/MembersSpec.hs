@@ -12,6 +12,7 @@ import Network.Octohat.TestData ( loadTestOrganizationName
                                 , loadTestAccountTwo
                                 , fingerprintFixture
                                 , loadTestAccountThree
+                                , loadTestAccountFour
                                 , loadOwnerTeam
                                 , publicKeyHostnameFixture
                                 , publicKeyFixture
@@ -55,16 +56,16 @@ spec = after removeTeams $ before setupToken $ do
 
     it "should delete a member from a team" $ do
       testOrganization     <- OrganizationName `fmap` loadTestOrganizationName
-      Right testAccountOne <- runGitHub loadTestAccountOne
+      Right testAccount <- runGitHub loadTestAccountTwo
 
       Right newTeam    <- runGitHub $ addTeamToOrganization (TeamName "Testing team") "Desc" testOrganization
-      Right addStatus  <- runGitHub $ addMemberToTeam (memberLogin testAccountOne) (teamId newTeam)
+      Right addStatus  <- runGitHub $ addMemberToTeam (memberLogin testAccount) (teamId newTeam)
       addStatus `shouldBe` Active
 
       Right membersInNewTeam <- runGitHub $ membersForTeam (teamId newTeam)
-      [memberLogin $ head membersInNewTeam] `shouldBe` [memberLogin testAccountOne]
+      [memberLogin $ head membersInNewTeam] `shouldBe` [memberLogin testAccount]
 
-      Right deleteStatus <- runGitHub $ deleteMemberFromTeam (memberLogin testAccountOne) (teamId newTeam)
+      Right deleteStatus <- runGitHub $ deleteMemberFromTeam (memberLogin testAccount) (teamId newTeam)
       [deleteStatus] `shouldBe` [Deleted]
 
       Right membersInNewTeamNow <- runGitHub $ membersForTeam (teamId newTeam)
@@ -74,7 +75,8 @@ spec = after removeTeams $ before setupToken $ do
       Right testAccountOne   <- runGitHub loadTestAccountOne
       Right testAccountTwo   <- runGitHub loadTestAccountTwo
       Right testAccountThree <- runGitHub loadTestAccountThree
+      Right testAccountFour  <- runGitHub loadTestAccountFour
       testOrganization       <- OrganizationName `fmap` loadTestOrganizationName
 
       Right members <- runGitHub $ membersForOrganization testOrganization
-      members `shouldMatchList` [testAccountOne, testAccountTwo, testAccountThree]
+      members `shouldMatchList` [testAccountOne, testAccountTwo, testAccountThree, testAccountFour]
