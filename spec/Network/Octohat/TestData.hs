@@ -5,6 +5,7 @@ module Network.Octohat.TestData ( loadTestOrganizationName
                                 , loadTestAccountOne
                                 , loadTestAccountTwo
                                 , loadTestAccountThree
+                                , loadTestAccountFour
                                 , publicKeyFixture
                                 , publicKeyHostnameFixture
                                 , fingerprintFixture
@@ -27,7 +28,8 @@ data TestEnvironment =
     organization :: T.Text,
     accountOne   :: T.Text,
     accountTwo   :: T.Text,
-    accountThree :: T.Text
+    accountThree :: T.Text,
+    accountFour  :: T.Text
   }
 
 readEnv :: [(String, String)] -> Maybe TestEnvironment
@@ -36,6 +38,7 @@ readEnv environment =
                   <*> lookup "TEST_ACCOUNT_ONE" env
                   <*> lookup "TEST_ACCOUNT_TWO" env
                   <*> lookup "TEST_ACCOUNT_THREE" env
+                  <*> lookup "TEST_ACCOUNT_FOUR" env
     where env = map (second T.pack) environment
 
 loadEnv :: IO TestEnvironment
@@ -60,6 +63,9 @@ loadTestAccountTwo = liftIO (accountTwo `fmap` loadEnv) >>= userForUsername
 
 loadTestAccountThree :: GitHub Member
 loadTestAccountThree = liftIO (accountThree `fmap` loadEnv) >>= userForUsername
+
+loadTestAccountFour :: GitHub Member
+loadTestAccountFour = liftIO (accountFour `fmap` loadEnv) >>= userForUsername
 
 publicKeyHostnameFixture :: T.Text
 publicKeyHostnameFixture = "octohat@stackbuilders"
