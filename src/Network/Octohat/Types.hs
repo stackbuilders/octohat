@@ -5,6 +5,8 @@ module Network.Octohat.Types ( Member(..)
                              , MemberWithKey(..)
                              , Team(..)
                              , TeamPermission(..)
+                             , Repo(..)
+                             , Organization(..)
                              , BearerToken(..)
                              , OrganizationName(..)
                              , TeamName(..)
@@ -48,6 +50,7 @@ data TeamPermission = OwnerAccess    -- ^ Default team of owners.
                                      --   repositories, as well as add other 
                                      --   collaborators to them. 
                     deriving (Show,Eq)
+
 -- | Represents a team in GitHub. Contains the team's ID, the team's name and an optional description
 data Team =
   Team { teamId          :: Integer
@@ -63,6 +66,20 @@ data TeamCreateRequest =
                     , newTeamDescription :: T.Text
                     , newTeamPermission  :: TeamPermission
                     } deriving (Show, Eq)
+
+-- | Represents an organisation in GitHub. Only has  name and description
+data Organization =
+  Organization 
+       { orgLogin       :: T.Text
+       , orgDescription :: Maybe T.Text
+       } deriving (Show, Eq)
+
+-- | Represents a repo in GitHub. Contains the Name, Description, and Private status
+data Repo =
+  Repo { repoName        :: T.Text
+       , repoDescription :: Maybe T.Text
+       , repoPrivate     :: Bool
+       } deriving (Show, Eq)
 
 -- | Represents a GitHub user with its public keys and fingerprints. A GitHub user might or might not
 --   have any public keys
@@ -141,6 +158,8 @@ instance ToJSON TeamPermission where
 
 $(deriveJSON defaultOptions { fieldLabelModifier = drop 6  . map toLower } ''Member)
 $(deriveJSON defaultOptions { fieldLabelModifier = drop 4  . map toLower } ''Team)
+$(deriveJSON defaultOptions { fieldLabelModifier = drop 4  . map toLower } ''Repo)
+$(deriveJSON defaultOptions { fieldLabelModifier = drop 3  . map toLower } ''Organization)
 $(deriveJSON defaultOptions { fieldLabelModifier = drop 7  . map toLower } ''TeamCreateRequest)
 $(deriveJSON defaultOptions { fieldLabelModifier = drop 19 . map toLower } ''AddPublicKeyRequest)
 
