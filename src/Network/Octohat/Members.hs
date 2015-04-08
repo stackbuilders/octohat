@@ -25,10 +25,11 @@ import Data.Monoid ((<>))
 --   and creates a new team. Regular GitHub authorization/authentication applies.
 addTeamToOrganization :: TeamName -- ^ Name of new team
                       -> T.Text  -- ^ Description of new team
+                      -> TeamPermission -- ^ Permission setting for team (push, pull, or admin)
                       -> OrganizationName -- ^ Organization name where the team will be created
                       -> GitHub Team
-addTeamToOrganization (TeamName nameOfNewTeam) descOfTeam (OrganizationName orgName) =
-  postRequestTo (composeEndpoint ["orgs", orgName, "teams"]) (TeamCreateRequest nameOfNewTeam descOfTeam)
+addTeamToOrganization (TeamName nameOfNewTeam) descOfTeam teamPerm (OrganizationName orgName) =
+  postRequestTo (composeEndpoint ["orgs", orgName, "teams"]) (TeamCreateRequest nameOfNewTeam descOfTeam teamPerm)
 
 -- | Deletes a team from an organization using its team ID.
 deleteTeamFromOrganization :: Integer          -- ^ ID of Team to delete

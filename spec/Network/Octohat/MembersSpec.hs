@@ -27,7 +27,7 @@ spec = after removeTeams $ before setupToken $ do
       testOrganization <- OrganizationName `fmap` loadTestOrganizationName
       Right ownerTeam  <- runGitHub loadOwnerTeam
 
-      Right newTeam           <- runGitHub $ addTeamToOrganization (TeamName "A new team") "A description" testOrganization
+      Right newTeam           <- runGitHub $ addTeamToOrganization (TeamName "A new team") "A description" PullAccess testOrganization
       Right teamsInOctohat    <- runGitHub $ teamsForOrganization testOrganization
       teamsInOctohat `shouldBe` [ownerTeam, newTeam]
       Right deleteResult      <- runGitHub $ deleteTeamFromOrganization (teamId newTeam)
@@ -39,7 +39,7 @@ spec = after removeTeams $ before setupToken $ do
       testOrganization     <- OrganizationName `fmap` loadTestOrganizationName
       Right testAccountOne <- runGitHub loadTestAccountOne
 
-      Right newTeam <- runGitHub $ addTeamToOrganization (TeamName "A new team") "A description" testOrganization
+      Right newTeam <- runGitHub $ addTeamToOrganization (TeamName "A new team") "A description" AdminAccess testOrganization
       let idForThisTeam = teamId newTeam
       Right addingStatus <- runGitHub $ addMemberToTeam (memberLogin testAccountOne) idForThisTeam
       addingStatus `shouldBe` Active
@@ -58,7 +58,7 @@ spec = after removeTeams $ before setupToken $ do
       testOrganization     <- OrganizationName `fmap` loadTestOrganizationName
       Right testAccount <- runGitHub loadTestAccountTwo
 
-      Right newTeam    <- runGitHub $ addTeamToOrganization (TeamName "Testing team") "Desc" testOrganization
+      Right newTeam    <- runGitHub $ addTeamToOrganization (TeamName "Testing team") "Desc" PushAccess testOrganization
       Right addStatus  <- runGitHub $ addMemberToTeam (memberLogin testAccount) (teamId newTeam)
       addStatus `shouldBe` Active
 
