@@ -28,7 +28,7 @@ Library
     , errors               == 1.4.*
     , http-client          == 0.4.*
     , http-types           == 0.8.*
-    , lens                 >= 4.0 && <= 4.7
+    , lens                 >= 4.0 && <= 4.7.*
     , mtl                  == 2.*
     , text                 == 1.2.*
     , time                 == 1.4.*
