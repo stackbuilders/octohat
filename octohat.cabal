@@ -53,7 +53,7 @@ test-suite spec
   hs-source-dirs  :   spec
   main-is         :   Spec.hs
   build-depends   :   base               >= 4.5 && <4.8
-                    , base-compat        == 0.5.*
+                    , base-compat        == 0.6.*
                     , hspec              == 2.1.*
                     , hspec-expectations == 0.6.*
                     , text               == 1.2.*
