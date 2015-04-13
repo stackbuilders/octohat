@@ -17,7 +17,7 @@ Library
   Build-depends:
       aeson                == 0.8.*
     , base                 >= 4.5 && < 4.8
-    , base-compat          == 0.5.*
+    , base-compat          == 0.6.*
     , base16-bytestring    == 0.1.1.*
     , base64-bytestring    == 1.0.*
     , bytestring           >= 0.9
@@ -28,7 +28,7 @@ Library
     , errors               == 1.4.*
     , http-client          == 0.4.*
     , http-types           == 0.8.*
-    , lens                 >= 4.0 && <= 4.7
+    , lens                 >= 4.0 && <= 4.7.0.1
     , mtl                  == 2.*
     , text                 == 1.2.*
     , time                 == 1.4.*
@@ -53,7 +53,7 @@ test-suite spec
   hs-source-dirs  :   spec
   main-is         :   Spec.hs
   build-depends   :   base               >= 4.5 && <4.8
-                    , base-compat        == 0.5.*
+                    , base-compat        == 0.6.*
                     , hspec              == 2.1.*
                     , hspec-expectations == 0.6.*
                     , text               == 1.2.*

@@ -6,6 +6,7 @@ module Network.Octohat.TestData ( loadTestOrganizationName
                                 , loadTestAccountTwo
                                 , loadTestAccountThree
                                 , loadTestAccountFour
+                                , loadTestRepo
                                 , publicKeyFixture
                                 , publicKeyHostnameFixture
                                 , fingerprintFixture
@@ -14,7 +15,7 @@ module Network.Octohat.TestData ( loadTestOrganizationName
 
 import Network.Octohat.Types
 import Network.Octohat (teamForTeamNameInOrg)
-import Network.Octohat.Members (userForUsername)
+import Network.Octohat.Members (userForUsername, repoForReponame)
 
 import Control.Monad.IO.Class (liftIO)
 import Control.Arrow (second)
@@ -29,7 +30,8 @@ data TestEnvironment =
     accountOne   :: T.Text,
     accountTwo   :: T.Text,
     accountThree :: T.Text,
-    accountFour  :: T.Text
+    accountFour  :: T.Text,
+    testRepo     :: T.Text
   }
 
 readEnv :: [(String, String)] -> Maybe TestEnvironment
@@ -39,6 +41,7 @@ readEnv environment =
                   <*> lookup "TEST_ACCOUNT_TWO" env
                   <*> lookup "TEST_ACCOUNT_THREE" env
                   <*> lookup "TEST_ACCOUNT_FOUR" env
+                  <*> lookup "TEST_REPO" env
     where env = map (second T.pack) environment
 
 loadEnv :: IO TestEnvironment
@@ -66,6 +69,12 @@ loadTestAccountThree = liftIO (accountThree `fmap` loadEnv) >>= userForUsername
 
 loadTestAccountFour :: GitHub Member
 loadTestAccountFour = liftIO (accountFour `fmap` loadEnv) >>= userForUsername
+
+loadTestRepo :: GitHub Repo
+loadTestRepo = do 
+    org  <- liftIO (organization `fmap` loadEnv)
+    repo <- liftIO (testRepo `fmap` loadEnv)
+    repoForReponame org repo
 
 publicKeyHostnameFixture :: T.Text
 publicKeyHostnameFixture = "octohat@stackbuilders"

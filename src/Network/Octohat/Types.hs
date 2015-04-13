@@ -4,6 +4,9 @@
 module Network.Octohat.Types ( Member(..)
                              , MemberWithKey(..)
                              , Team(..)
+                             , TeamPermission(..)
+                             , Repo(..)
+                             , Organization(..)
                              , BearerToken(..)
                              , OrganizationName(..)
                              , TeamName(..)
@@ -37,11 +40,23 @@ data Member =
          , memberId    :: Integer
          } deriving (Show, Eq)
 
+-- | Represents the different permissions that a team can have in an organisation.
+data TeamPermission = OwnerAccess    -- ^ Default team of owners.
+                    | PullAccess     -- ^ This team will be able to view and clone its
+                                     --   repositories.
+                    | PushAccess     -- ^ This team will be able to read its 
+                                     --   repositories, as well as push to them.
+                    | AdminAccess    -- ^ This team will be able to push/pull to its
+                                     --   repositories, as well as add other 
+                                     --   collaborators to them. 
+                    deriving (Show,Eq)
+
 -- | Represents a team in GitHub. Contains the team's ID, the team's name and an optional description
 data Team =
   Team { teamId          :: Integer
        , teamName        :: T.Text
        , teamDescription :: Maybe T.Text
+       , teamPermission  :: TeamPermission
        } deriving (Show, Eq)
 
 -- | Represents a request to create a new team within an organization. The rest of the paramaters
@@ -49,7 +64,22 @@ data Team =
 data TeamCreateRequest =
   TeamCreateRequest { newTeamName        :: T.Text
                     , newTeamDescription :: T.Text
+                    , newTeamPermission  :: TeamPermission
                     } deriving (Show, Eq)
+
+-- | Represents an organisation in GitHub. Only has  name and description
+data Organization =
+  Organization 
+       { orgLogin       :: T.Text
+       , orgDescription :: Maybe T.Text
+       } deriving (Show, Eq)
+
+-- | Represents a repo in GitHub. Contains the Name, Description, and Private status
+data Repo =
+  Repo { repoName        :: T.Text
+       , repoDescription :: Maybe T.Text
+       , repoPrivate     :: Bool
+       } deriving (Show, Eq)
 
 -- | Represents a GitHub user with its public keys and fingerprints. A GitHub user might or might not
 --   have any public keys
@@ -107,8 +137,29 @@ instance FromJSON StatusInTeam where
       Nothing        -> (fail . maybe "No error message from GitHub" show) (HS.lookup "message" o)
   parseJSON _         = fail "Expected a membership document, got something else"
 
+instance FromJSON TeamPermission where
+  parseJSON (String p) = 
+    case p of
+      "pull"         -> pure PullAccess
+      "push"         -> pure PushAccess
+      "admin"        -> pure AdminAccess
+      "owner"        -> pure OwnerAccess
+      _              -> fail "Expected a valid team permission ?"
+  parseJSON _         = fail "Expected a team permssion, got something else"
+
+instance ToJSON TeamPermission where
+  toJSON p = 
+    case p of 
+      PullAccess   -> String "pull"
+      PushAccess   -> String "push"
+      AdminAccess  -> String "admin"
+      OwnerAccess  -> String "owner"
+
+
 $(deriveJSON defaultOptions { fieldLabelModifier = drop 6  . map toLower } ''Member)
 $(deriveJSON defaultOptions { fieldLabelModifier = drop 4  . map toLower } ''Team)
+$(deriveJSON defaultOptions { fieldLabelModifier = drop 4  . map toLower } ''Repo)
+$(deriveJSON defaultOptions { fieldLabelModifier = drop 3  . map toLower } ''Organization)
 $(deriveJSON defaultOptions { fieldLabelModifier = drop 7  . map toLower } ''TeamCreateRequest)
 $(deriveJSON defaultOptions { fieldLabelModifier = drop 19 . map toLower } ''AddPublicKeyRequest)
 
