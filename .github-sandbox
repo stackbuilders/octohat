@@ -3,3 +3,4 @@ TEST_ACCOUNT_ONE=jsantos-testaccount2
 TEST_ACCOUNT_TWO=octohat-test-1
 TEST_ACCOUNT_THREE=octohat-test-2
 TEST_ACCOUNT_FOUR=octohat-test-3
+TEST_REPO=octohat-test-repo
