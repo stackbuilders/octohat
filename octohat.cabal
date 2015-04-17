@@ -53,7 +53,7 @@ Executable abc
 
   Build-depends:
     aeson                     ==0.8.0.*,
-    base                      >=4.7 && <4.8,
+    base                      >=4.5 && <4.8,
     text                      ==1.2.0.*,
     optparse-applicative      ==0.11.0.*,
     octohat                   ==0.1.2,
