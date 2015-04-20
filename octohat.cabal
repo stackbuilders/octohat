@@ -16,7 +16,7 @@ Library
 
   Build-depends:
       aeson                == 0.8.*
-    , base                 >= 4.5 && < 4.8
+    , base                 >= 4.4 && < 4.8
     , base-compat          == 0.6.*
     , base16-bytestring    == 0.1.1.*
     , base64-bytestring    == 1.0.*
@@ -54,7 +54,7 @@ Executable abc
 
   Build-depends:
     aeson                     ==0.8.0.*,
-    base                      >=4.5 && <4.8,
+    base                      >=4.4 && <4.8,
     text                      ==1.2.0.*,
     optparse-applicative      ==0.11.0.*,
     octohat                   ==0.1.2,
@@ -69,7 +69,7 @@ test-suite spec
   type            :   exitcode-stdio-1.0
   hs-source-dirs  :   spec
   main-is         :   Spec.hs
-  build-depends   :   base               >= 4.5 && <4.8
+  build-depends   :   base               >= 4.4 && <4.8
                     , base-compat        == 0.6.*
                     , hspec              == 2.1.*
                     , hspec-expectations == 0.6.*
