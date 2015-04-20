@@ -1,7 +1,9 @@
 Name:                octohat
 Synopsis:            A tested, minimal wrapper around GitHub's API.
+Description:         A tested, minimal wrapper around GitHub's API.
 Version:             0.1.3
 License:             MIT
+License-file:        LICENSE
 Author:              Stack Builders
 Maintainer:          hackage@stackbuilders.com
 Stability:           Experimental
@@ -62,7 +64,7 @@ Executable abc
     yaml                      ==0.8.10.*
 
   default-language: Haskell2010
-  ghc-options: -threaded -Wall -Werror
+  ghc-options: -threaded -Wall
 
 test-suite spec
   ghc-options     :   -Wall
