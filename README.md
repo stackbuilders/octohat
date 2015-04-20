@@ -74,6 +74,28 @@ You can these variables either directly or put them in `.GITHUB_SANDBOX`. Either
 cabal test
 ```
 
+### Demo
+
+After you have built the binaries using `cabal build` you should have an executable file named `.dist/build/abc/abc`. This provides a rather basic interface to the GitHub API. The tool expects the environment variable `GITHUB_TOKEN` to be set to a GitHub token with permissions to modify an organization. Some of the operations supported: (each subcommand has its own `--help` page)
+
+`dist/build/abc/abc --help`
+
+```
+Some options
+
+Usage: abc COMMAND
+  GitHub client to manage teams. Please specify your token as GITHUB_TOKEN
+
+Available options:
+  -h,--help                Show this help text
+
+Available commands:
+  list-teams               List teams in a organization
+  members-in               List members in team and organization
+  add-to-team              Add users to a team
+  delete-user              Delete a user from a team
+```
+
 ## License
 
 MIT, see the LICENSE file.
