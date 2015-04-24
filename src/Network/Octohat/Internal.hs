@@ -12,7 +12,6 @@ module Network.Octohat.Internal
 import Control.Error.Safe
 import Control.Lens (set, view, (^?))
 import Control.Monad.Reader
-import Control.Monad.Error.Class (throwError)
 import Data.Monoid
 import Data.Aeson
 import Data.List
@@ -61,14 +60,10 @@ getRequestPaginatedTo uri = do
   let combinedResponse o u acc = do
         response <- liftIO $ getWith o (T.unpack u)
         checkForStatus response
-        case getResponseEntity response of 
-          Left err     -> throwError err
-          Right values -> do
-            let acc' = acc <> values
-            let nextLink = response ^? responseLink "rel" "next" . linkURL
-            case nextLink of 
-              Just next   -> combinedResponse o (decodeUtf8 next) acc'
-              Nothing     -> return acc
+        values <- tryRight $ getResponseEntity response
+        case response ^? responseLink "rel" "next" . linkURL of
+          Just next   -> combinedResponse o (decodeUtf8 next) $ acc <> values
+          Nothing     -> return $ acc <> values
   combinedResponse opts uri mempty
             
 
