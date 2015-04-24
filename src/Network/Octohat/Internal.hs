@@ -10,7 +10,7 @@ module Network.Octohat.Internal
   , composeEndpoint) where
 
 import Control.Error.Safe
-import Control.Lens (set, view, (^?))
+import Control.Lens (set, view, preview)
 import Control.Monad.Reader
 import Data.Monoid
 import Data.Aeson
@@ -61,7 +61,7 @@ getRequestPaginatedTo uri = do
         response <- liftIO $ getWith o (T.unpack u)
         checkForStatus response
         values <- tryRight $ getResponseEntity response
-        case response ^? responseLink "rel" "next" . linkURL of
+        case preview (responseLink "rel" "next" . linkURL) response  of
           Just next   -> combinedResponse o (decodeUtf8 next) $ acc <> values
           Nothing     -> return $ acc <> values
   combinedResponse opts uri mempty
