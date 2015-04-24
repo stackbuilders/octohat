@@ -4,16 +4,19 @@
 module Network.Octohat.Internal
   ( putRequestTo
   , getRequestTo
+  , getRequestPaginatedTo
   , postRequestTo
   , deleteRequestTo
   , composeEndpoint) where
 
 import Control.Error.Safe
-import Control.Lens (set, view)
+import Control.Lens (set, view, (^?))
 import Control.Monad.Reader
+import Control.Monad.Error.Class (throwError)
+import Data.Monoid
 import Data.Aeson
 import Data.List
-import Data.Text.Encoding (encodeUtf8)
+import Data.Text.Encoding (encodeUtf8, decodeUtf8)
 import Network.Wreq
 import qualified Network.Wreq.Types as WT
 import qualified Data.ByteString.Lazy as BSL
@@ -38,7 +41,6 @@ requestOptions = do
   let opts'' = set (header "User-Agent") ["octohat v0.1"] opts'
   return opts''
 
-
 postRequestTo :: (ToJSON b, WT.Postable b, FromJSON a) => T.Text -> b -> GitHub a
 postRequestTo uri body = do
   opts     <- requestOptions
@@ -52,6 +54,23 @@ getRequestTo uri = do
   response <- liftIO $ getWith opts (T.unpack uri)
   checkForStatus response
   tryRight $ getResponseEntity response
+
+getRequestPaginatedTo :: Monoid a => FromJSON a => T.Text -> GitHub a
+getRequestPaginatedTo uri = do
+  opts     <- requestOptions
+  let combinedResponse o u acc = do
+        response <- liftIO $ getWith o (T.unpack u)
+        checkForStatus response
+        case getResponseEntity response of 
+          Left err     -> throwError err
+          Right values -> do
+            let acc' = acc <> values
+            let nextLink = response ^? responseLink "rel" "next" . linkURL
+            case nextLink of 
+              Just next   -> combinedResponse o (decodeUtf8 next) acc'
+              Nothing     -> return acc
+  combinedResponse opts uri mempty
+            
 
 putRequestTo :: FromJSON a => T.Text -> GitHub a
 putRequestTo uri = do

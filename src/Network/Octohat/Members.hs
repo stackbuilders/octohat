@@ -43,26 +43,26 @@ deleteTeamFromOrganization idOfTeam = deleteRequestTo (composeEndpoint ["teams",
 -- | Returns a list of members of an organization with the given name.
 membersForOrganization :: OrganizationName -- ^ The organization name
                        -> GitHub [Member]
-membersForOrganization (OrganizationName nameOfOrg) = getRequestTo (composeEndpoint ["orgs", nameOfOrg, "members"])
+membersForOrganization (OrganizationName nameOfOrg) = getRequestPaginatedTo (composeEndpoint ["orgs", nameOfOrg, "members"])
 
 -- | Returns a list of members of a team with the given team ID.
 membersForTeam :: Integer         -- ^ The team ID
                -> GitHub [Member]
-membersForTeam idOfTeam = getRequestTo (composeEndpoint ["teams", T.pack $ show idOfTeam, "members"])
+membersForTeam idOfTeam = getRequestPaginatedTo (composeEndpoint ["teams", T.pack $ show idOfTeam, "members"])
 
 -- | Returns a list of repos of a team with the given team ID.
 reposForTeam :: Integer         -- ^ The team ID
               -> GitHub [Repo]
-reposForTeam idOfTeam = getRequestTo (composeEndpoint ["teams", T.pack $ show idOfTeam, "repos"])
+reposForTeam idOfTeam = getRequestPaginatedTo (composeEndpoint ["teams", T.pack $ show idOfTeam, "repos"])
 
 -- | Returns a list of teams for the organization with the given name
 teamsForOrganization :: OrganizationName -- ^ The organization name
                      -> GitHub [Team]
-teamsForOrganization (OrganizationName nameOfOrg) = getRequestTo (composeEndpoint ["orgs", nameOfOrg, "teams"])
+teamsForOrganization (OrganizationName nameOfOrg) = getRequestPaginatedTo (composeEndpoint ["orgs", nameOfOrg, "teams"])
 
 -- | Returns a list of all organizations for the user
 organizations :: GitHub [Organization]
-organizations = getRequestTo (composeEndpoint ["user", "orgs"])
+organizations = getRequestPaginatedTo (composeEndpoint ["user", "orgs"])
 
 -- | Adds a member to a team, might invite or add the member. Refer to 'StatusInTeam'
 addMemberToTeam :: T.Text               -- ^ The GitHub username to add to a team
@@ -89,7 +89,7 @@ deleteMemberFromTeam nameOfUser idOfTeam =
 -- | Returns the public keys of the user with the given name
 publicKeysForUser :: T.Text             -- ^ GitHub username
                   -> GitHub [PublicKey]
-publicKeysForUser nameOfUser = getRequestTo (composeEndpoint ["users", nameOfUser, "keys"])
+publicKeysForUser nameOfUser = getRequestPaginatedTo (composeEndpoint ["users", nameOfUser, "keys"])
 
 -- | Finds a user ID given their username
 userForUsername :: T.Text        -- ^ GitHub username
