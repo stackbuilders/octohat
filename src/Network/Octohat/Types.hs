@@ -19,11 +19,14 @@ module Network.Octohat.Types ( Member(..)
                              , GitHubReturnStatus(..)
                              , DidAddKey(..)
                              , AddPublicKeyRequest(..)
+                             , Links(..)
+                             , Pagination(..)
                              , runGitHub
                              , runGitHub'
                              , GitHub) where
 import Control.Applicative
 import Control.Monad.Reader (ReaderT(..))
+import Control.Monad.State (StateT(..), evalStateT)
 import Control.Monad.Trans.Either
 import Data.Aeson
 import Data.Aeson.TH
@@ -203,14 +206,24 @@ newtype OrganizationName = OrganizationName { unOrganizationName :: T.Text } der
 --   Team name and the Organization name are both strings and may be confused
 newtype TeamName = TeamName { unTeamName :: T.Text } deriving Show
 
+
+-- | Links are used in the Pagination object
+data Links = Links { linkNext  :: Maybe Link, linkLast :: Maybe Link
+                   , linkFirst :: Maybe Link, linkPrev :: Maybe Link } deriving Show
+
+-- | Pagination options that can be set, including the page number, and the per_page
+data Pagination = Pagination { perPage :: Int, page :: Int, links :: Links, recurse :: Bool } deriving Show
+defPagination :: Pagination
+defPagination = Pagination 30 1 (Links Nothing Nothing Nothing Nothing) True
+
 -- | The monad transformer where all operations run. Supports initial configuration
 --   through a Reader monad and the possibility of failure through Either
-type GitHub = EitherT GitHubReturnStatus (ReaderT BearerToken IO)
+type GitHub = EitherT GitHubReturnStatus (ReaderT BearerToken (StateT Pagination IO))
 
 -- | Executes a computation built within the GitHub monad returning an Either within
 --   the IO data type using the provided token
 runGitHub' :: GitHub a -> BearerToken -> IO (Either GitHubReturnStatus a)
-runGitHub' comp = runReaderT (runEitherT comp)
+runGitHub' comp token = evalStateT (runReaderT (runEitherT comp) token) defPagination
 
 -- | Executes a computation built within the GitHub monad returning an Either within
 --   the IO data type. Reads an API token from an environment variable named GITHUB_TOKEN

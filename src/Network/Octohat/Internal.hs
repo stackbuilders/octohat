@@ -12,10 +12,11 @@ module Network.Octohat.Internal
 import Control.Error.Safe
 import Control.Lens (set, view, preview)
 import Control.Monad.Reader
+import Control.Monad.State
 import Data.Monoid
 import Data.Aeson
 import Data.List
-import Data.Text.Encoding (encodeUtf8, decodeUtf8)
+import Data.Text.Encoding (encodeUtf8)
 import Network.Wreq
 import qualified Network.Wreq.Types as WT
 import qualified Data.ByteString.Lazy as BSL
@@ -54,17 +55,32 @@ getRequestTo uri = do
   checkForStatus response
   tryRight $ getResponseEntity response
 
-getRequestPaginatedTo :: Monoid a => FromJSON a => T.Text -> GitHub a
+getRequestPaginatedTo :: (Monoid a, FromJSON a) => T.Text -> GitHub a
 getRequestPaginatedTo uri = do
   opts     <- requestOptions
-  let combinedResponse o u acc = do
-        response <- liftIO $ getWith o (T.unpack u)
+  let combinedResponse o acc = do
+        page_no  <- gets page
+        per_page <- gets perPage
+        let ps = set (param "page") [T.pack $ show page_no] . set (param "per_page") [T.pack $ show per_page]
+        response <- liftIO $ getWith (ps o) (T.unpack uri)
         checkForStatus response
+        let links' = Links 
+                      { linkNext  = preview (responseLink "rel" "next")  response 
+                      , linkLast  = preview (responseLink "rel" "last")  response 
+                      , linkFirst = preview (responseLink "rel" "first") response 
+                      , linkPrev  = preview (responseLink "rel" "prev")  response }
+        modify $ \pn -> pn { links = links' }
         values <- tryRight $ getResponseEntity response
-        case preview (responseLink "rel" "next" . linkURL) response  of
-          Just next   -> combinedResponse o (decodeUtf8 next) $ acc <> values
-          Nothing     -> return $ acc <> values
-  combinedResponse opts uri mempty
+        recurse' <- gets recurse
+        let acc' = acc <> values
+        if recurse' 
+            then do 
+                case linkNext links' of
+                  Just _next  -> do modify $ \pn -> pn { page = page_no + 1}
+                                    combinedResponse o acc'
+                  Nothing     -> return acc'
+            else return acc'
+  combinedResponse opts mempty
             
 
 putRequestTo :: FromJSON a => T.Text -> GitHub a
