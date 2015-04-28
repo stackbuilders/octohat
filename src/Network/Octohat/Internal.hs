@@ -4,13 +4,17 @@
 module Network.Octohat.Internal
   ( putRequestTo
   , getRequestTo
+  , resetPage
+  , getRequestPaginatedTo
   , postRequestTo
   , deleteRequestTo
   , composeEndpoint) where
 
 import Control.Error.Safe
-import Control.Lens (set, view)
+import Control.Lens (set, view, preview)
 import Control.Monad.Reader
+import Control.Monad.State
+import Data.Monoid
 import Data.Aeson
 import Data.List
 import Data.Text.Encoding (encodeUtf8)
@@ -38,7 +42,6 @@ requestOptions = do
   let opts'' = set (header "User-Agent") ["octohat v0.1"] opts'
   return opts''
 
-
 postRequestTo :: (ToJSON b, WT.Postable b, FromJSON a) => T.Text -> b -> GitHub a
 postRequestTo uri body = do
   opts     <- requestOptions
@@ -52,6 +55,37 @@ getRequestTo uri = do
   response <- liftIO $ getWith opts (T.unpack uri)
   checkForStatus response
   tryRight $ getResponseEntity response
+
+resetPage :: GitHub ()
+resetPage = modify $ \pn -> pn { page = 1 }
+
+getRequestPaginatedTo :: (Monoid a, FromJSON a) => T.Text -> GitHub a
+getRequestPaginatedTo uri = do
+  opts     <- requestOptions
+  let combinedResponse o acc = do
+        page_no  <- gets page
+        per_page <- gets perPage
+        let ps = set (param "page") [T.pack $ show page_no] . set (param "per_page") [T.pack $ show per_page]
+        response <- liftIO $ getWith (ps o) (T.unpack uri)
+        checkForStatus response
+        let links' = Links 
+                      { linkNext  = preview (responseLink "rel" "next")  response 
+                      , linkLast  = preview (responseLink "rel" "last")  response 
+                      , linkFirst = preview (responseLink "rel" "first") response 
+                      , linkPrev  = preview (responseLink "rel" "prev")  response }
+        modify $ \pn -> pn { links = links' }
+        values <- tryRight $ getResponseEntity response
+        recurse' <- gets recurse
+        let acc' = acc <> values
+        if recurse' 
+            then do 
+                case linkNext links' of
+                  Just _next  -> do modify $ \pn -> pn { page = page_no + 1}
+                                    combinedResponse o acc'
+                  Nothing     -> return acc'
+            else return acc'
+  combinedResponse opts mempty
+            
 
 putRequestTo :: FromJSON a => T.Text -> GitHub a
 putRequestTo uri = do
