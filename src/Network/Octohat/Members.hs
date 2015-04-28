@@ -17,6 +17,7 @@ module Network.Octohat.Members
   , userForUsername
   , repoForReponame 
   , addPublicKey
+  , resetPage
   ) where
 
 import Network.Octohat.Internal

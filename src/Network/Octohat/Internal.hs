@@ -4,6 +4,7 @@
 module Network.Octohat.Internal
   ( putRequestTo
   , getRequestTo
+  , resetPage
   , getRequestPaginatedTo
   , postRequestTo
   , deleteRequestTo
@@ -54,6 +55,9 @@ getRequestTo uri = do
   response <- liftIO $ getWith opts (T.unpack uri)
   checkForStatus response
   tryRight $ getResponseEntity response
+
+resetPage :: GitHub ()
+resetPage = modify $ \pn -> pn { page = 1 }
 
 getRequestPaginatedTo :: (Monoid a, FromJSON a) => T.Text -> GitHub a
 getRequestPaginatedTo uri = do
