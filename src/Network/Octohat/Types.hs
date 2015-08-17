@@ -1,5 +1,6 @@
 {-# LANGUAGE TemplateHaskell   #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE CPP               #-}
 
 module Network.Octohat.Types ( Member(..)
                              , MemberWithKey(..)
@@ -27,7 +28,11 @@ module Network.Octohat.Types ( Member(..)
 import Control.Applicative
 import Control.Monad.Reader (ReaderT(..))
 import Control.Monad.State (StateT(..), evalStateT)
+#if MIN_VERSION_errors(2,0,0)
+import Control.Monad.Trans.Except (ExceptT, runExceptT)
+#else
 import Control.Monad.Trans.Either
+#endif
 import Data.Aeson
 import Data.Aeson.TH
 import Data.Char (toLower)
@@ -218,12 +223,20 @@ defPagination = Pagination 30 1 (Links Nothing Nothing Nothing Nothing) True
 
 -- | The monad transformer where all operations run. Supports initial configuration
 --   through a Reader monad and the possibility of failure through Either
+#if MIN_VERSION_errors(2,0,0)
+type GitHub = ExceptT GitHubReturnStatus (ReaderT BearerToken (StateT Pagination IO))
+#else
 type GitHub = EitherT GitHubReturnStatus (ReaderT BearerToken (StateT Pagination IO))
+#endif
 
 -- | Executes a computation built within the GitHub monad returning an Either within
 --   the IO data type using the provided token
 runGitHub' :: GitHub a -> BearerToken -> IO (Either GitHubReturnStatus a)
+#if MIN_VERSION_errors(2,0,0)
+runGitHub' comp token = evalStateT (runReaderT (runExceptT comp) token) defPagination
+#else
 runGitHub' comp token = evalStateT (runReaderT (runEitherT comp) token) defPagination
+#endif
 
 -- | Executes a computation built within the GitHub monad returning an Either within
 --   the IO data type. Reads an API token from an environment variable named GITHUB_TOKEN
