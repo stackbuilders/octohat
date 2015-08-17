@@ -1,7 +1,7 @@
 Name:                octohat
 Synopsis:            A tested, minimal wrapper around GitHub's API.
 Description:         A tested, minimal wrapper around GitHub's API.
-Version:             0.1.4.2
+Version:             0.1.5.0
 License:             MIT
 License-file:        LICENSE
 Author:              Stack Builders
